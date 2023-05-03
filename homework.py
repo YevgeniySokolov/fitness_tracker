@@ -1,12 +1,14 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 
 
 @dataclass
 class InfoMessage:
     """Информационное сообщение о тренировке."""
-    MESSAGE = ('Тип тренировки: {0}; Длительность: {1:.3f} ч.; '
-               'Дистанция: {2:.3f} км; Ср. скорость: {3:.3f} км/ч; '
-               'Потрачено ккал: {4:.3f}.')
+    MESSAGE = ('Тип тренировки: {training_type}; '
+               'Длительность: {duration:.3f} ч.; '
+               'Дистанция: {distance:.3f} км; '
+               'Ср. скорость: {speed:.3f} км/ч; '
+               'Потрачено ккал: {calories:.3f}.')
 
     training_type: str
     duration: float
@@ -15,9 +17,7 @@ class InfoMessage:
     calories: float
 
     def get_message(self) -> str:
-        return self.MESSAGE.format(self.training_type,
-                                   self.duration, self.distance,
-                                   self.speed, self.calories)
+        return self.MESSAGE.format(**asdict(self))
 
 
 @dataclass
@@ -33,11 +33,11 @@ class Training:
 
     def get_distance(self) -> float:
         """Получить дистанцию в км."""
-        return (self.action * self.LEN_STEP / self.M_IN_KM)
+        return self.action * self.LEN_STEP / self.M_IN_KM
 
     def get_mean_speed(self) -> float:
         """Получить среднюю скорость движения."""
-        return (self.get_distance() / self.duration)
+        return self.get_distance() / self.duration
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
@@ -128,8 +128,7 @@ def read_package(workout_type: str, data: list) -> Training:
                                                      'WLK': SportsWalking}
     if workout_type in workout_class_type:
         return workout_class_type[workout_type](*data)
-    else:
-        raise ValueError('There is no such workout_type.')
+    raise ValueError('There is no such workout_type.')
 
 
 def main(training: Training) -> None:
