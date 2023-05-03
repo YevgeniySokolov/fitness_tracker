@@ -4,6 +4,10 @@ from dataclasses import dataclass
 @dataclass
 class InfoMessage:
     """Информационное сообщение о тренировке."""
+    MESSAGE = ('Тип тренировки: {0}; Длительность: {1:.3f} ч.; '
+               'Дистанция: {2:.3f} км; Ср. скорость: {3:.3f} км/ч; '
+               'Потрачено ккал: {4:.3f}.')
+
     training_type: str
     duration: float
     distance: float
@@ -11,11 +15,9 @@ class InfoMessage:
     calories: float
 
     def get_message(self) -> str:
-        return (f'Тип тренировки: {self.training_type}; '
-                f'Длительность: {self.duration:.3f} ч.; '
-                f'Дистанция: {self.distance:.3f} км; '
-                f'Ср. скорость: {self.speed:.3f} км/ч; '
-                f'Потрачено ккал: {self.calories:.3f}.')
+        return self.MESSAGE.format(self.training_type,
+                                   self.duration, self.distance,
+                                   self.speed, self.calories)
 
 
 @dataclass
@@ -31,17 +33,15 @@ class Training:
 
     def get_distance(self) -> float:
         """Получить дистанцию в км."""
-        distance = self.action * self.LEN_STEP / self.M_IN_KM
-        return distance
+        return (self.action * self.LEN_STEP / self.M_IN_KM)
 
     def get_mean_speed(self) -> float:
         """Получить среднюю скорость движения."""
-        mean_speed = self.get_distance() / self.duration
-        return mean_speed
+        return (self.get_distance() / self.duration)
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        raise NotImplementedError
+        raise NotImplementedError('Method has not been implemented yet.')
 
     def show_training_info(self) -> InfoMessage:
         """Вернуть информационное сообщение о выполненной тренировке."""
@@ -126,10 +126,10 @@ def read_package(workout_type: str, data: list) -> Training:
     workout_class_type: dict[str, type[Training]] = {'SWM': Swimming,
                                                      'RUN': Running,
                                                      'WLK': SportsWalking}
-    for key in workout_class_type:
-        if workout_type == key:
-            return workout_class_type[workout_type](*data)
-    raise ValueError('There is no such workout_type.')
+    if workout_type in workout_class_type:
+        return workout_class_type[workout_type](*data)
+    else:
+        raise ValueError('There is no such workout_type.')
 
 
 def main(training: Training) -> None:
