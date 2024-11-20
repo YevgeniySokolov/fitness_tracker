@@ -14,3 +14,8 @@
 Дистанция составила 9.95 км.
 Вы сожгли 1512.00 ккал.
 ```
+
+*Автор проекта:*  
+Евгений Соколов  
+E-mail: ea.sokolov.87@yandex.ru  
+GitHub: https://github.com/YevgeniySokolov
